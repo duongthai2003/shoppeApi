@@ -1,0 +1,3 @@
+npm i --save @nestjs/config : de doc dc file env
+npm install --save @nestjs/swagger : cai swagger
+npm i @nestjs/mongoose mongoose : de ket noi voi mongodb
