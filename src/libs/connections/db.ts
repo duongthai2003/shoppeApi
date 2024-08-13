@@ -1,9 +1,27 @@
 import { DynamicModule } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule, MongooseModuleAsyncOptions } from '@nestjs/mongoose';
-import { MainDBModels } from './main-db';
+import { MainDBModel, MainDBModels } from './main-db';
 
 export class DB extends MongooseModule {
+  static mainDb(): DynamicModule {
+    const as = this.dbConnectAsync(
+      'MONGODB_MAIN_DB_PATH',
+      this.getDbUri('Shoppee'),
+      'Shoppee',
+    );
+    if (as) {
+      console.log('krt noi thanh cong');
+    } else {
+      console.log('ko  ket noi');
+    }
+    return as;
+  }
+
+  static mainDbModules(modelNames: MainDBModel[]): DynamicModule {
+    return DB.forFeatureModels(modelNames, MainDBModels, 'Shoppee');
+  }
+
   static dbConnectAsync(
     env,
     dbName,
@@ -13,7 +31,7 @@ export class DB extends MongooseModule {
     return DB.forRootAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
-        uri: configService.get<string>(env) + '/' + dbName,
+        uri: 'mongodb://localhost:27017' + '/' + dbName,
       }),
       inject: [ConfigService],
       connectionName: connectionName,
@@ -25,15 +43,8 @@ export class DB extends MongooseModule {
     if (process.env.MONGO_DB_QUERY && process.env.MONGO_DB_QUERY !== '') {
       return `${dbName}${process.env.MONGO_DB_QUERY}`;
     }
+    return dbName;
   };
-
-  static mainDb(): DynamicModule {
-    return this.dbConnectAsync(
-      'MONGODB_MAIN_DB_PATH',
-      this.getDbUri(process.env.NAME_DATABASE),
-      process.env.NAME_DATABASE,
-    );
-  }
 
   static forFeatureModels(
     modelNames: any[],
@@ -48,13 +59,5 @@ export class DB extends MongooseModule {
       }));
 
     return super.forFeature(_models, dbName);
-  }
-
-  static mainDbModules(modelNames): DynamicModule {
-    return DB.forFeatureModels(
-      modelNames,
-      MainDBModels,
-      process.env.NAME_DATABASE,
-    );
   }
 }

@@ -1,3 +1,10 @@
 npm i --save @nestjs/config : de doc dc file env
 npm install --save @nestjs/swagger : cai swagger
 npm i @nestjs/mongoose mongoose : de ket noi voi mongodb
+npm i --save @nestjs/passport passport : de lm dang nhap dang ky
+npm install --save @nestjs/jwt : de tao tokens jwt dang nhap
+npm install passport-jwt : lm cai jwt dang nhap
+npm install --save @types/passport-jwt :lm cai jwt dang nhap
+npm install --save @types/passport-local : de lm cai register 
+npm install class-validator --save : dung de check email,date ....
+npm i morgan : lm logger
